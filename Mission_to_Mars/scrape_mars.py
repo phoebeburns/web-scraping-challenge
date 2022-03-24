@@ -34,9 +34,9 @@ def scrape():
     # Close the browser after scraping
     browser.quit()
 
-    mars_news = {'title': marsheadline, 'story': marscopy}
 
-    mars_all.update(mars_news)
+    mars_all["title"] = marsheadline
+    mars_all["story"] = marscopy
 
 
 ## Mars space images featued image
@@ -57,7 +57,7 @@ def scrape():
     # Close the browser after scraping
     browser.quit()
 
-    mars_all[feat_img] = featured_img
+    mars_all["feat_img"] = featured_img
 
 
 ##Mars fact table sraping
@@ -73,7 +73,7 @@ def scrape():
     facts_html = df.to_html()
     facts_html = facts_html.replace("\n","")
 
-    mars_all[mars_html] = facts_html
+    mars_all["mars_html"] = facts_html
 
 
 ##Mars Hemisphere image scraping
@@ -188,6 +188,6 @@ def scrape():
 
     hemi_images.append(valles_hemi)
 
-    mars_all[hemispheres] = hemi_images
+    mars_all["hemispheres"] = hemi_images
 
     return mars_all
