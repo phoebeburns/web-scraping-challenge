@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
 
 from bs4 import BeautifulSoup
 from splinter import Browser
@@ -12,10 +10,13 @@ import pymongo as pg
 import pandas as pd
 
 
-# In[4]:
 
+mars_all = {}
 
 def scrape():
+
+## Mars news scrape
+
 # browser = init_browser()
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=False)
@@ -33,12 +34,13 @@ def scrape():
     # Close the browser after scraping
     browser.quit()
 
+    mars_news = {'title': marsheadline, 'story': marscopy}
 
-# In[5]:
+    mars_all.update(mars_news)
 
 
-def scrape():
-# browser = init_browser()
+## Mars space images featued image
+
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=False)
 
@@ -55,46 +57,29 @@ def scrape():
     # Close the browser after scraping
     browser.quit()
 
-
-# In[6]:
-
-
-mars_facts_url = "https://galaxyfacts-mars.com"
-
-table = pd.read_html(mars_facts_url)
-table[1]
+    mars_all[feat_img] = featured_img
 
 
-# In[7]:
+##Mars fact table sraping
+
+    mars_facts_url = "https://galaxyfacts-mars.com"
+
+    table = pd.read_html(mars_facts_url)
+
+    df = table[1]
+    df.columns = ["Fact", "Value"]
+    df.set_index(["Fact"])
+
+    facts_html = df.to_html()
+    facts_html = facts_html.replace("\n","")
+
+    mars_all[mars_html] = facts_html
 
 
-df = table[1]
-df.columns = ["Fact", "Value"]
-df.set_index(["Fact"])
-df
+##Mars Hemisphere image scraping
 
+    hemi_images = []
 
-# In[8]:
-
-
-facts_html = df.to_html()
-facts_html = facts_html.replace("\n","")
-facts_html
-
-
-# In[9]:
-
-
-hemi_images = []
-
-
-# In[10]:
-
-
-## Cerberus hemisphere
-
-def scrape():
-# browser = init_browser()
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=False)
 
@@ -122,13 +107,6 @@ def scrape():
     hemi_images.append(cerberus_hemi)
 
 
-# In[11]:
-
-
-## Schiaparelli hemisphere
-
-def scrape():
-# browser = init_browser()
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=False)
 
@@ -156,12 +134,8 @@ def scrape():
     hemi_images.append(sch_hemi)
 
 
-# In[12]:
-
-
 ## Syrtis Major hemisphere
 
-def scrape():
 # browser = init_browser()
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=False)
@@ -180,8 +154,6 @@ def scrape():
 
     syrtis_image_path = url + "/" + syrtis_img
 
-    # print(sch_image_path)
-
     # Close the browser after scraping
     browser.quit()
 
@@ -190,13 +162,8 @@ def scrape():
     hemi_images.append(syrtis_hemi)
 
 
-# In[13]:
-
-
 ## Valles Marineris hemisphere
 
-def scrape():
-    # browser = init_browser()
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=False)
 
@@ -214,8 +181,6 @@ def scrape():
 
     valles_image_path = url + "/" + valles_img
 
-    # print(sch_image_path)
-
     # Close the browser after scraping
     browser.quit()
 
@@ -223,15 +188,6 @@ def scrape():
 
     hemi_images.append(valles_hemi)
 
+    mars_all[hemispheres] = hemi_images
 
-# In[14]:
-
-
-hemi_images
-
-
-# In[ ]:
-
-
-
-
+    return mars_all
