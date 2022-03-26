@@ -13,6 +13,9 @@ import pandas as pd
 
 mars_all = {}
 
+mars_all["homework"] = "web-scraping-challenge"
+
+
 def scrape():
 
 ## Mars news scrape
@@ -27,7 +30,6 @@ def scrape():
     html = browser.html
     soup = BeautifulSoup(html, "html.parser")
 
-    article_element = soup.select_one('div.list_text')
     marsheadline = soup.find("div","content_title").get_text()
     marscopy = soup.find("div","article_teaser_body").get_text()
 

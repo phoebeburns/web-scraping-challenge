@@ -18,11 +18,12 @@ def scrape():
     
     mars = mongo.db.mars
     mars_all = scrape_mars.scrape()
-    mars.update({}, mars_all, upsert=True)
-    
+    mars.replace_one({"homework":"web-scraping-challenge"}, mars_all, upsert=True)
 
     # Redirect back to home page
     return redirect("/")
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
