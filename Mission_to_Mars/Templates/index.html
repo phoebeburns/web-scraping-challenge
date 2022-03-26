@@ -34,7 +34,7 @@
             <!--left container-->
             <div class="col-8">
                 <h4>Featured Mars Image</h4>
-                <img src={{mars.feat_img}} class="img-fluid" alt="Responsive image" style="max-width:100%; max-height: auto;">
+                <img src={{mars.feat_img|safe}} class="img-fluid" alt="Responsive image" style="max-width:100%; max-height: auto;">
             </div>
 
             <!--right container-->
@@ -60,17 +60,15 @@
         <div class="col-12">
             <div class="row">
 
-                {% for img in mars.mars_hemisphere %}
                 <div class = "col-6">
                     <!--card items-->
                     <div class="card" style="margin: 30px;">
-                        <img src="{{img.img_url}}" class="card-img-top">
+                        <img src="{{mars.hemispheres.0.url}}" class="card-img-top">
                         <div class="card-body">
-                            <p class="card-text" style="font-weight: 700;">{{img.title}}</p>
+                            <p class="card-text" style="font-weight: 700;">{{mars.hemispheres.0.Title}}</p>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
 
             </div>
         </div>

@@ -54,7 +54,7 @@ def scrape():
 
     relative_image_path = soup.find_all('img')[1]["src"]
 
-    featured_img = url + relative_image_path
+    featured_img = url + '/' + relative_image_path
 
     # Close the browser after scraping
     browser.quit()
@@ -70,7 +70,7 @@ def scrape():
 
     df = table[1]
     df.columns = ["Fact", "Value"]
-    df.set_index(["Fact"], inline=True)
+    df.set_index("Fact", inplace = True)
 
     facts_html = df.to_html()
     facts_html = facts_html.replace("\n","")
