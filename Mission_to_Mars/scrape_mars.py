@@ -70,7 +70,7 @@ def scrape():
 
     df = table[1]
     df.columns = ["Fact", "Value"]
-    df.set_index(["Fact"])
+    df.set_index(["Fact"], inline=True)
 
     facts_html = df.to_html()
     facts_html = facts_html.replace("\n","")
