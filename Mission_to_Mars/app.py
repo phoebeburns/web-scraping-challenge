@@ -17,10 +17,9 @@ def index():
 def scrape():
     
     mars = mongo.db.mars
-    mars_all = scrape_mars.scrape()
-    mars.replace_one({"homework":"web-scraping-challenge"}, mars_all, upsert=True)
+    mars_all = scrape_mars.scrape_all()
+    mars.replace_one({"Homework":"Web Scraping Challenge"}, mars_all, upsert=True)
 
-    # Redirect back to home page
     return redirect("/")
 
 if __name__ == "__main__":

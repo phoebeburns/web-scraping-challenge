@@ -1,195 +1,118 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup as bs
 from splinter import Browser
-from pprint import pprint
 from webdriver_manager.chrome import ChromeDriverManager
-import pymongo as pg
 import pandas as pd
+import time
 
 
-
-mars_all = {}
-
-mars_all["homework"] = "web-scraping-challenge"
-
-
-def scrape():
-
-## Mars news scrape
-
-# browser = init_browser()
+def init_browser():
     executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
+    
+    return Browser('chrome', **executable_path, headless=False)
 
+mars_all={}
+
+mars_all["Homework"] = "Web Scraping Challenge"
+
+def scrape_all():
+    scrape_news()
+    scrape_feat_img()
+    scrape_facts()
+    scrape_hemis()
+    return mars_all
+
+def scrape_news():
+
+    browser = init_browser()
+ 
     url = "https://redplanetscience.com/"
     browser.visit(url)
+    soup = bs(browser.html, "html.parser")
 
-    html = browser.html
-    soup = BeautifulSoup(html, "html.parser")
+    time.sleep(3)
 
     marsheadline = soup.find("div","content_title").get_text()
     marscopy = soup.find("div","article_teaser_body").get_text()
 
-    # Close the browser after scraping
-    browser.quit()
-
-
     mars_all["title"] = marsheadline
     mars_all["story"] = marscopy
+    
+    browser.quit()
+    
+    return
 
 
-## Mars space images featued image
-
-    executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
+def scrape_feat_img():
+    browser = init_browser()
 
     url = "https://spaceimages-mars.com"
     browser.visit(url)
-
-    html = browser.html
-    soup = BeautifulSoup(html, "html.parser")
+    soup = bs(browser.html, "html.parser")
 
     relative_image_path = soup.find_all('img')[1]["src"]
 
-    featured_img = url + '/' + relative_image_path
-
-    # Close the browser after scraping
-    browser.quit()
+    featured_img = url + relative_image_path
 
     mars_all["feat_img"] = featured_img
 
+    browser.quit()
 
-##Mars fact table sraping
+    return
 
+
+def scrape_facts():
     mars_facts_url = "https://galaxyfacts-mars.com"
 
     table = pd.read_html(mars_facts_url)
 
     df = table[1]
     df.columns = ["Fact", "Value"]
-    df.set_index("Fact", inplace = True)
-
+    df.set_index(["Fact"], inplace = True)
+    
     facts_html = df.to_html()
     facts_html = facts_html.replace("\n","")
 
     mars_all["mars_html"] = facts_html
+   
+    return
 
 
-##Mars Hemisphere image scraping
+def scrape_hemis():
 
-    hemi_images = []
+    browser = init_browser()
 
-    executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
-
-    url = "https://marshemispheres.com/cerberus.html"
+    url = "https://marshemispheres.com/"
     browser.visit(url)
+    soup = bs(browser.html, "html.parser")
 
-    html = browser.html
-    soup = BeautifulSoup(html, "html.parser")
+    links = soup.find_all("a", "itemLink product-item", href=True)
 
-    cerberus_title = soup.find("h2", class_="title").get_text()
+    html_list = []
 
-    cerb_desc = soup.find_all('dd')
-
-    cerberus_img = cerb_desc[1].find('a')['href']
-
-    cerberus_image_path = url + "/" + cerberus_img
-
-    print(cerberus_image_path)
-
-    # Close the browser after scraping
-    browser.quit()
-
-    cerberus_hemi = {"Title": cerberus_title, "url": cerberus_image_path}
-
-    hemi_images.append(cerberus_hemi)
+    for link in links:
+        if url + link['href'] not in html_list:
+            if link['href'] != '#':
+                html_list.append(url + link['href'])
 
 
-    executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
+    # print(html_list)
+    hemi_images={}
 
-    url = "https://marshemispheres.com/schiaparelli.html"
-    browser.visit(url)
-
-    html = browser.html
-    soup = BeautifulSoup(html, "html.parser")
-
-    schiaparelli_title = soup.find("h2", class_="title").get_text()
-
-    sch_desc = soup.find_all('dd')
-
-    sch_img = sch_desc[1].find('a')['href']
-
-    sch_image_path = url + "/" + sch_img
-
-    # print(sch_image_path)
-
-    # Close the browser after scraping
-    browser.quit()
-
-    sch_hemi = {"Title": schiaparelli_title, "url": sch_image_path}
-
-    hemi_images.append(sch_hemi)
-
-
-## Syrtis Major hemisphere
-
-# browser = init_browser()
-    executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
-
-    url = "https://marshemispheres.com/syrtis.html"
-    browser.visit(url)
-
-    html = browser.html
-    soup = BeautifulSoup(html, "html.parser")
-
-    syrtis_title = soup.find("h2", class_="title").get_text()
-
-    syrtis_desc = soup.find_all('dd')
-
-    syrtis_img = syrtis_desc[1].find('a')['href']
-
-    syrtis_image_path = url + "/" + syrtis_img
-
-    # Close the browser after scraping
-    browser.quit()
-
-    syrtis_hemi = {"Title": syrtis_title, "url": syrtis_image_path}
-
-    hemi_images.append(syrtis_hemi)
-
-
-## Valles Marineris hemisphere
-
-    executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
-
-    url = "https://marshemispheres.com/valles.html"
-    browser.visit(url)
-
-    html = browser.html
-    soup = BeautifulSoup(html, "html.parser")
-
-    valles_title = soup.find("h2", class_="title").get_text()
-
-    valles_desc = soup.find_all('dd')
-
-    valles_img = valles_desc[1].find('a')['href']
-
-    valles_image_path = url + "/" + valles_img
-
-    # Close the browser after scraping
-    browser.quit()
-
-    valles_hemi = {"Title": valles_title, "url": valles_image_path}
-
-    hemi_images.append(valles_hemi)
+    for img_html in html_list:
+        browser.visit(img_html)
+        soup = bs(browser.html, "html.parser")
+        ls = soup.find_all('a', href = True, text = True)
+        img_title = soup.find('h2','title').get_text()
+        for l in ls:
+            if url + link['href'] not in hemi_images:
+                if l.text == 'Sample':
+                    hemi_images[img_title] = url + l['href']
 
     mars_all["hemispheres"] = hemi_images
+
+    browser.quit()
 
     return mars_all
