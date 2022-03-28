@@ -15,9 +15,9 @@ def init_browser():
 
 mars_all={}
 
-mars_all["Homework"] = "Web Scraping Challenge"
 
 def scrape_all():
+    mars_all["Homework"] = "Web Scraping Challenge"
     scrape_news()
     scrape_feat_img()
     scrape_facts()
@@ -54,9 +54,9 @@ def scrape_feat_img():
 
     relative_image_path = soup.find_all('img')[1]["src"]
 
-    featured_img = url + relative_image_path
+    featured_image_url = url + "/" + relative_image_path
 
-    mars_all["feat_img"] = featured_img
+    mars_all["feat_img"] = featured_image_url
 
     browser.quit()
 
@@ -99,7 +99,7 @@ def scrape_hemis():
 
 
     # print(html_list)
-    hemi_images={}
+    hemi_images=[]
 
     for img_html in html_list:
         browser.visit(img_html)
@@ -109,7 +109,7 @@ def scrape_hemis():
         for l in ls:
             if url + link['href'] not in hemi_images:
                 if l.text == 'Sample':
-                    hemi_images[img_title] = url + l['href']
+                    hemi_images.append({"Title": img_title, "img_url": url + l['href']})
 
     mars_all["hemispheres"] = hemi_images
 

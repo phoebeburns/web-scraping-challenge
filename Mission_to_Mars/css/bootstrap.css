@@ -1969,6 +1969,11 @@ progress {
   color: var(--bs-table-hover-color);
 }
 
+.jumbotron {
+  background-color:hsl(206, 24%, 49%);
+  
+}
+
 .table-primary {
   --bs-table-bg: #3a3f44;
   --bs-table-striped-bg: #44494d;
